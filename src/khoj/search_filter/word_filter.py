@@ -50,17 +50,21 @@ class WordFilter(BaseFilter):
         "Find entries containing required and not blocked words specified in query"
         # Separate natural query from required, blocked words filters
         with timer("Extract required, blocked filters from query", logger):
-            required_words = set([word.lower() for word in re.findall(self.required_regex, query)])
-            blocked_words = set([word.lower() for word in re.findall(self.blocked_regex, query)])
+            required_words = {
+                word.lower() for word in re.findall(self.required_regex, query)
+            }
+            blocked_words = {
+                word.lower() for word in re.findall(self.blocked_regex, query)
+            }
             query = self.defilter(query)
 
-        if len(required_words) == 0 and len(blocked_words) == 0:
+        if not required_words and not blocked_words:
             return query, set(range(len(entries)))
 
         # Return item from cache if exists
         cache_key = tuple(sorted(required_words)), tuple(sorted(blocked_words))
         if cache_key in self.cache:
-            logger.debug(f"Return word filter results from cache")
+            logger.debug("Return word filter results from cache")
             included_entry_indices = self.cache[cache_key]
             return query, included_entry_indices
 
@@ -70,14 +74,14 @@ class WordFilter(BaseFilter):
         # mark entries that contain all required_words for inclusion
         with timer("Mark entries satisfying filter", logger):
             entries_with_all_required_words = set(range(len(entries)))
-            if len(required_words) > 0:
+            if required_words:
                 entries_with_all_required_words = set.intersection(
                     *[self.word_to_entry_index.get(word, set()) for word in required_words]
                 )
 
             # mark entries that contain any blocked_words for exclusion
             entries_with_any_blocked_words = set()
-            if len(blocked_words) > 0:
+            if blocked_words:
                 entries_with_any_blocked_words = set.union(
                     *[self.word_to_entry_index.get(word, set()) for word in blocked_words]
                 )

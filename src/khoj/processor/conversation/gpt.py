@@ -49,14 +49,14 @@ def extract_questions(
     # Extract Past User Message and Inferred Questions from Conversation Log
     chat_history = "".join(
         [
-            f'Q: {chat["intent"]["query"]}\n\n{chat["intent"].get("inferred-queries") or list([chat["intent"]["query"]])}\n\n{chat["message"]}\n\n'
+            f'Q: {chat["intent"]["query"]}\n\n{chat["intent"].get("inferred-queries") or [chat["intent"]["query"]]}\n\n{chat["message"]}\n\n'
             for chat in conversation_log.get("chat", [])[-4:]
             if chat["by"] == "khoj"
         ]
     )
 
     # Get dates relative to today for prompt creation
-    today = datetime.today()
+    today = datetime.now()
     current_new_year = today.replace(month=1, day=1)
     last_new_year = current_new_year.replace(year=today.year - 1)
 
@@ -117,7 +117,7 @@ def converse(
     compiled_references = "\n\n".join({f"# {item}" for item in references})
 
     # Get Conversation Primer appropriate to Conversation Type
-    if compiled_references == "":
+    if not compiled_references:
         conversation_primer = prompts.general_conversation.format(current_date=current_date, query=user_query)
     else:
         conversation_primer = prompts.notes_conversation.format(

@@ -100,7 +100,11 @@ def configure_search(model: SearchModels, config: FullConfig, regenerate: bool, 
 
     try:
         # Initialize Org Notes Search
-        if (t == state.SearchType.Org or t == None) and config.content_type.org and config.search_type.asymmetric:
+        if (
+            (t == state.SearchType.Org or t is None)
+            and config.content_type.org
+            and config.search_type.asymmetric
+        ):
             logger.info("🦄 Setting up search for orgmode notes")
             # Extract Entries, Generate Notes Embeddings
             model.org_search = text_search.setup(
@@ -113,7 +117,7 @@ def configure_search(model: SearchModels, config: FullConfig, regenerate: bool, 
 
         # Initialize Markdown Search
         if (
-            (t == state.SearchType.Markdown or t == None)
+            (t == state.SearchType.Markdown or t is None)
             and config.content_type.markdown
             and config.search_type.asymmetric
         ):
@@ -128,7 +132,11 @@ def configure_search(model: SearchModels, config: FullConfig, regenerate: bool, 
             )
 
         # Initialize PDF Search
-        if (t == state.SearchType.Pdf or t == None) and config.content_type.pdf and config.search_type.asymmetric:
+        if (
+            (t == state.SearchType.Pdf or t is None)
+            and config.content_type.pdf
+            and config.search_type.asymmetric
+        ):
             logger.info("🖨️ Setting up search for pdf")
             # Extract Entries, Generate PDF Embeddings
             model.pdf_search = text_search.setup(
@@ -140,14 +148,22 @@ def configure_search(model: SearchModels, config: FullConfig, regenerate: bool, 
             )
 
         # Initialize Image Search
-        if (t == state.SearchType.Image or t == None) and config.content_type.image and config.search_type.image:
+        if (
+            (t == state.SearchType.Image or t is None)
+            and config.content_type.image
+            and config.search_type.image
+        ):
             logger.info("🌄 Setting up search for images")
             # Extract Entries, Generate Image Embeddings
             model.image_search = image_search.setup(
                 config.content_type.image, search_config=config.search_type.image, regenerate=regenerate
             )
 
-        if (t == state.SearchType.Github or t == None) and config.content_type.github and config.search_type.asymmetric:
+        if (
+            (t == state.SearchType.Github or t is None)
+            and config.content_type.github
+            and config.search_type.asymmetric
+        ):
             logger.info("🐙 Setting up search for github")
             # Extract Entries, Generate Github Embeddings
             model.github_search = text_search.setup(
@@ -159,7 +175,9 @@ def configure_search(model: SearchModels, config: FullConfig, regenerate: bool, 
             )
 
         # Initialize External Plugin Search
-        if (t == None or t in state.SearchType) and config.content_type.plugins:
+        if (
+            t is None or t in state.SearchType
+        ) and config.content_type.plugins:
             logger.info("🔌 Setting up search for plugins")
             model.plugin_search = {}
             for plugin_type, plugin_config in config.content_type.plugins.items():
@@ -172,7 +190,7 @@ def configure_search(model: SearchModels, config: FullConfig, regenerate: bool, 
                 )
 
         # Initialize Notion Search
-        if (t == None or t in state.SearchType) and config.content_type.notion:
+        if (t is None or t in state.SearchType) and config.content_type.notion:
             logger.info("🔌 Setting up search for notion")
             model.notion_search = text_search.setup(
                 NotionToJsonl,

@@ -68,13 +68,18 @@ def test_extract_date_range():
     ]
 
     # Unparseable date filter specified in query
-    assert DateFilter().extract_date_range('head dt:"Summer of 69" tail') == None
+    assert DateFilter().extract_date_range('head dt:"Summer of 69" tail') is None
 
     # No date filter specified in query
-    assert DateFilter().extract_date_range("head tail") == None
+    assert DateFilter().extract_date_range("head tail") is None
 
     # Non intersecting date ranges
-    assert DateFilter().extract_date_range('head dt>"1984-01-01" dt<"1984-01-01" tail') == None
+    assert (
+        DateFilter().extract_date_range(
+            'head dt>"1984-01-01" dt<"1984-01-01" tail'
+        )
+        is None
+    )
 
 
 @pytest.mark.filterwarnings("ignore:The localize method is no longer necessary.")

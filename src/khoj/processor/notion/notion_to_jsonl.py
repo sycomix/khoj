@@ -116,7 +116,7 @@ class NotionToJsonl(TextToJsonl):
         page_id = page["id"]
         title, content = self.get_page_content(page_id)
 
-        if title == None or content == None:
+        if title is None or content is None:
             return []
 
         current_entries = []
@@ -124,11 +124,14 @@ class NotionToJsonl(TextToJsonl):
         for block in content["results"]:
             block_type = block.get("type")
 
-            if block_type == None:
+            if block_type is None:
                 continue
             block_data = block[block_type]
 
-            if block_data.get("rich_text") == None or len(block_data["rich_text"]) == 0:
+            if (
+                block_data.get("rich_text") is None
+                or len(block_data["rich_text"]) == 0
+            ):
                 # There's no text to handle here.
                 continue
 
@@ -146,10 +149,9 @@ class NotionToJsonl(TextToJsonl):
                         )
                     )
                 curr_heading = block_data["rich_text"][0]["plain_text"]
-            else:
-                if curr_heading != "":
-                    # Add the last known heading to the content for additional context
-                    raw_content = self.process_heading(curr_heading)
+            elif curr_heading != "":
+                # Add the last known heading to the content for additional context
+                raw_content = self.process_heading(curr_heading)
             for text in block_data["rich_text"]:
                 raw_content += self.process_text(text)
 
@@ -176,7 +178,7 @@ class NotionToJsonl(TextToJsonl):
     def process_nested_children(self, children, raw_content, block_type=None):
         for child in children["results"]:
             child_type = child.get("type")
-            if child_type == None:
+            if child_type is None:
                 continue
             child_data = child[child_type]
             if child_data.get("rich_text") and len(child_data["rich_text"]) > 0:
@@ -216,8 +218,7 @@ class NotionToJsonl(TextToJsonl):
             return None, None
         properties = page["properties"]
         title_field = "Title" if "Title" in properties else "title"
-        title = page["properties"][title_field]["title"][0]["text"]["content"]
-        return title, content
+        return properties[title_field]["title"][0]["text"]["content"], content
 
     def update_entries_with_ids(self, current_entries, previous_entries):
         # Identify, mark and merge any new entries with previous entries

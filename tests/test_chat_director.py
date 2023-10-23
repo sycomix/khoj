@@ -40,15 +40,18 @@ def populate_chat_history(message_list):
 @pytest.mark.chatquality
 def test_chat_with_no_chat_history_or_retrieved_content(chat_client):
     # Act
-    response = chat_client.get(f'/api/chat?q="Hello, my name is Testatron. Who are you?"&stream=true')
+    response = chat_client.get(
+        '/api/chat?q="Hello, my name is Testatron. Who are you?"&stream=true'
+    )
     response_message = response.content.decode("utf-8")
 
     # Assert
     expected_responses = ["Khoj", "khoj"]
     assert response.status_code == 200
-    assert any([expected_response in response_message for expected_response in expected_responses]), (
-        "Expected assistants name, [K|k]hoj, in response but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message
+        for expected_response in expected_responses
+    ), f"Expected assistants name, [K|k]hoj, in response but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -62,15 +65,16 @@ def test_answer_from_chat_history(chat_client):
     populate_chat_history(message_list)
 
     # Act
-    response = chat_client.get(f'/api/chat?q="What is my name?"&stream=true')
+    response = chat_client.get('/api/chat?q="What is my name?"&stream=true')
     response_message = response.content.decode("utf-8")
 
     # Assert
     expected_responses = ["Testatron", "testatron"]
     assert response.status_code == 200
-    assert any([expected_response in response_message for expected_response in expected_responses]), (
-        "Expected [T|t]estatron in response but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message
+        for expected_response in expected_responses
+    ), f"Expected [T|t]estatron in response but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -88,7 +92,7 @@ def test_answer_from_currently_retrieved_content(chat_client):
     populate_chat_history(message_list)
 
     # Act
-    response = chat_client.get(f'/api/chat?q="Where was Xi Li born?"')
+    response = chat_client.get('/api/chat?q="Where was Xi Li born?"')
     response_message = response.content.decode("utf-8")
 
     # Assert
@@ -111,7 +115,7 @@ def test_answer_from_chat_history_and_previously_retrieved_content(chat_client):
     populate_chat_history(message_list)
 
     # Act
-    response = chat_client.get(f'/api/chat?q="Where was I born?"')
+    response = chat_client.get('/api/chat?q="Where was I born?"')
     response_message = response.content.decode("utf-8")
 
     # Assert
@@ -133,7 +137,7 @@ def test_answer_from_chat_history_and_currently_retrieved_content(chat_client):
     populate_chat_history(message_list)
 
     # Act
-    response = chat_client.get(f'/api/chat?q="Where was I born?"')
+    response = chat_client.get('/api/chat?q="Where was I born?"')
     response_message = response.content.decode("utf-8")
 
     # Assert
@@ -157,15 +161,16 @@ def test_no_answer_in_chat_history_or_retrieved_content(chat_client):
     populate_chat_history(message_list)
 
     # Act
-    response = chat_client.get(f'/api/chat?q="Where was I born?"&stream=true')
+    response = chat_client.get('/api/chat?q="Where was I born?"&stream=true')
     response_message = response.content.decode("utf-8")
 
     # Assert
     expected_responses = ["don't know", "do not know", "no information", "do not have", "don't have"]
     assert response.status_code == 200
-    assert any([expected_response in response_message for expected_response in expected_responses]), (
-        "Expected chat director to say they don't know in response, but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message
+        for expected_response in expected_responses
+    ), f"Expected chat director to say they don't know in response, but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -175,15 +180,18 @@ def test_no_answer_in_chat_history_or_retrieved_content(chat_client):
 def test_answer_requires_current_date_awareness(chat_client):
     "Chat actor should be able to answer questions relative to current date using provided notes"
     # Act
-    response = chat_client.get(f'/api/chat?q="Where did I have lunch today?"&stream=true')
+    response = chat_client.get(
+        '/api/chat?q="Where did I have lunch today?"&stream=true'
+    )
     response_message = response.content.decode("utf-8")
 
     # Assert
     expected_responses = ["Arak", "Medellin"]
     assert response.status_code == 200
-    assert any([expected_response in response_message for expected_response in expected_responses]), (
-        "Expected chat director to say Arak, Medellin, but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message
+        for expected_response in expected_responses
+    ), f"Expected chat director to say Arak, Medellin, but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -192,7 +200,9 @@ def test_answer_requires_current_date_awareness(chat_client):
 def test_answer_requires_date_aware_aggregation_across_provided_notes(chat_client):
     "Chat director should be able to answer questions that require date aware aggregation across multiple notes"
     # Act
-    response = chat_client.get(f'/api/chat?q="How much did I spend on dining this year?"&stream=true')
+    response = chat_client.get(
+        '/api/chat?q="How much did I spend on dining this year?"&stream=true'
+    )
     response_message = response.content.decode("utf-8")
 
     # Assert
@@ -213,7 +223,7 @@ def test_answer_general_question_not_in_chat_history_or_retrieved_content(chat_c
 
     # Act
     response = chat_client.get(
-        f'/api/chat?q=""Write a haiku about unit testing. Do not say anything else."&stream=true'
+        '/api/chat?q=""Write a haiku about unit testing. Do not say anything else."&stream=true'
     )
     response_message = response.content.decode("utf-8")
 
@@ -221,9 +231,10 @@ def test_answer_general_question_not_in_chat_history_or_retrieved_content(chat_c
     expected_responses = ["test", "Test"]
     assert response.status_code == 200
     assert len(response_message.splitlines()) == 3  # haikus are 3 lines long
-    assert any([expected_response in response_message for expected_response in expected_responses]), (
-        "Expected [T|t]est in response, but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message
+        for expected_response in expected_responses
+    ), f"Expected [T|t]est in response, but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -231,7 +242,9 @@ def test_answer_general_question_not_in_chat_history_or_retrieved_content(chat_c
 @pytest.mark.chatquality
 def test_ask_for_clarification_if_not_enough_context_in_question(chat_client):
     # Act
-    response = chat_client.get(f'/api/chat?q="What is the name of Namitas older son"&stream=true')
+    response = chat_client.get(
+        '/api/chat?q="What is the name of Namitas older son"&stream=true'
+    )
     response_message = response.content.decode("utf-8")
 
     # Assert
@@ -242,9 +255,10 @@ def test_ask_for_clarification_if_not_enough_context_in_question(chat_client):
         "which one is the older",
     ]
     assert response.status_code == 200
-    assert any([expected_response in response_message.lower() for expected_response in expected_responses]), (
-        "Expected chat director to ask for clarification in response, but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message.lower()
+        for expected_response in expected_responses
+    ), f"Expected chat director to ask for clarification in response, but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -260,15 +274,16 @@ def test_answer_in_chat_history_beyond_lookback_window(chat_client):
     populate_chat_history(message_list)
 
     # Act
-    response = chat_client.get(f'/api/chat?q="What is my name?"&stream=true')
+    response = chat_client.get('/api/chat?q="What is my name?"&stream=true')
     response_message = response.content.decode("utf-8")
 
     # Assert
     expected_responses = ["Testatron", "testatron"]
     assert response.status_code == 200
-    assert any([expected_response in response_message.lower() for expected_response in expected_responses]), (
-        "Expected [T|t]estatron in response, but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message.lower()
+        for expected_response in expected_responses
+    ), f"Expected [T|t]estatron in response, but got: {response_message}"
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -276,12 +291,15 @@ def test_answer_in_chat_history_beyond_lookback_window(chat_client):
 def test_answer_requires_multiple_independent_searches(chat_client):
     "Chat director should be able to answer by doing multiple independent searches for required information"
     # Act
-    response = chat_client.get(f'/api/chat?q="Is Xi older than Namita?"&stream=true')
+    response = chat_client.get(
+        '/api/chat?q="Is Xi older than Namita?"&stream=true'
+    )
     response_message = response.content.decode("utf-8")
 
     # Assert
     expected_responses = ["he is older than namita", "xi is older than namita", "xi li is older than namita"]
     assert response.status_code == 200
-    assert any([expected_response in response_message.lower() for expected_response in expected_responses]), (
-        "Expected Xi is older than Namita, but got: " + response_message
-    )
+    assert any(
+        expected_response in response_message.lower()
+        for expected_response in expected_responses
+    ), f"Expected Xi is older than Namita, but got: {response_message}"

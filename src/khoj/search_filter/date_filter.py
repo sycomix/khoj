@@ -70,7 +70,7 @@ class DateFilter(BaseFilter):
         # return results from cache if exists
         cache_key = tuple(query_daterange)
         if cache_key in self.cache:
-            logger.debug(f"Return date filter results from cache")
+            logger.debug("Return date filter results from cache")
             entries_to_include = self.cache[cache_key]
             return query, entries_to_include
 
@@ -121,7 +121,7 @@ class DateFilter(BaseFilter):
                 date_range_considering_comparator += [[0, dtrange_start]]
             elif cmp == "<=":
                 date_range_considering_comparator += [[0, dtrange_end]]
-            elif cmp == "=" or cmp == ":" or cmp == "==":
+            elif cmp in ["=", ":", "=="]:
                 date_range_considering_comparator += [[dtrange_start, dtrange_end]]
 
         # Combine above intervals (via AND/intersect)
@@ -143,7 +143,9 @@ class DateFilter(BaseFilter):
         "Parse date string passed in date filter of query to datetime object"
         # clean date string to handle future date parsing by date parser
         future_strings = ["later", "from now", "from today"]
-        prefer_dates_from = {True: "future", False: "past"}[any([True for fstr in future_strings if fstr in date_str])]
+        prefer_dates_from = {True: "future", False: "past"}[
+            any(True for fstr in future_strings if fstr in date_str)
+        ]
         clean_date_str = re.sub("|".join(future_strings), "", date_str)
 
         # parse date passed in query date filter

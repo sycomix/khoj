@@ -98,8 +98,7 @@ if not state.demo:
         if not state.config or not state.config.content_type:
             return {"status": "ok"}
 
-        if state.config.content_type:
-            state.config.content_type[content_type] = None
+        state.config.content_type[content_type] = None
 
         if content_type == "github":
             state.model.github_search = None
@@ -207,11 +206,13 @@ async def search(
 
     # Run validation checks
     results: List[SearchResponse] = []
-    if q is None or q == "":
-        logger.warning(f"No query param (q) passed in API call to initiate search")
+    if q is None or not q:
+        logger.warning("No query param (q) passed in API call to initiate search")
         return results
     if not state.model or not any(state.model.__dict__.values()):
-        logger.warning(f"No search models loaded. Configure a search model before initiating search")
+        logger.warning(
+            "No search models loaded. Configure a search model before initiating search"
+        )
         return results
 
     # initialize variables
@@ -223,7 +224,7 @@ async def search(
     # return cached results, if available
     query_cache_key = f"{user_query}-{n}-{t}-{r}-{score_threshold}-{dedupe}"
     if query_cache_key in state.query_cache:
-        logger.debug(f"Return response from query cache")
+        logger.debug("Return response from query cache")
         return state.query_cache[query_cache_key]
 
     # Encode query with filter terms removed
@@ -233,10 +234,11 @@ async def search(
 
     encoded_asymmetric_query = None
     if t == SearchType.All or t != SearchType.Image:
-        text_search_models: List[TextSearchModel] = [
-            model for model in state.model.__dict__.values() if isinstance(model, TextSearchModel)
-        ]
-        if text_search_models:
+        if text_search_models := [
+            model
+            for model in state.model.__dict__.values()
+            if isinstance(model, TextSearchModel)
+        ]:
             with timer("Encoding query took", logger=logger):
                 encoded_asymmetric_query = util.normalize_embeddings(
                     text_search_models[0].bi_encoder.encode(
@@ -247,7 +249,7 @@ async def search(
                 )
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        if (t == SearchType.Org or t == SearchType.All) and state.model.org_search:
+        if t in [SearchType.Org, SearchType.All] and state.model.org_search:
             # query org-mode notes
             search_futures += [
                 executor.submit(
@@ -261,7 +263,10 @@ async def search(
                 )
             ]
 
-        if (t == SearchType.Markdown or t == SearchType.All) and state.model.markdown_search:
+        if (
+            t in [SearchType.Markdown, SearchType.All]
+            and state.model.markdown_search
+        ):
             # query markdown notes
             search_futures += [
                 executor.submit(
@@ -275,7 +280,10 @@ async def search(
                 )
             ]
 
-        if (t == SearchType.Github or t == SearchType.All) and state.model.github_search:
+        if (
+            t in [SearchType.Github, SearchType.All]
+            and state.model.github_search
+        ):
             # query github issues
             search_futures += [
                 executor.submit(
@@ -289,7 +297,7 @@ async def search(
                 )
             ]
 
-        if (t == SearchType.Pdf or t == SearchType.All) and state.model.pdf_search:
+        if t in [SearchType.Pdf, SearchType.All] and state.model.pdf_search:
             # query pdf files
             search_futures += [
                 executor.submit(
@@ -330,7 +338,10 @@ async def search(
                 )
             ]
 
-        if (t == SearchType.Notion or t == SearchType.All) and state.model.notion_search:
+        if (
+            t in [SearchType.Notion, SearchType.All]
+            and state.model.notion_search
+        ):
             # query notion pages
             search_futures += [
                 executor.submit(

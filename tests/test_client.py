@@ -44,7 +44,7 @@ def test_search_with_valid_content_type(client):
 # ----------------------------------------------------------------------------------------------------
 def test_update_with_invalid_content_type(client):
     # Act
-    response = client.get(f"/api/update?t=invalid_content_type")
+    response = client.get("/api/update?t=invalid_content_type")
 
     # Assert
     assert response.status_code == 422
@@ -62,7 +62,7 @@ def test_update_with_valid_content_type(client):
 # ----------------------------------------------------------------------------------------------------
 def test_regenerate_with_invalid_content_type(client):
     # Act
-    response = client.get(f"/api/update?force=true&t=invalid_content_type")
+    response = client.get("/api/update?force=true&t=invalid_content_type")
 
     # Assert
     assert response.status_code == 422
@@ -80,7 +80,7 @@ def test_regenerate_with_valid_content_type(client):
 # ----------------------------------------------------------------------------------------------------
 def test_get_configured_types_via_api(client):
     # Act
-    response = client.get(f"/api/config/types")
+    response = client.get("/api/config/types")
 
     # Assert
     assert response.status_code == 200
@@ -98,7 +98,7 @@ def test_get_configured_types_with_only_plugin_content_config(content_config):
     client = TestClient(app)
 
     # Act
-    response = client.get(f"/api/config/types")
+    response = client.get("/api/config/types")
 
     # Assert
     assert response.status_code == 200
@@ -116,7 +116,7 @@ def test_get_configured_types_with_no_plugin_content_config(content_config):
     client = TestClient(app)
 
     # Act
-    response = client.get(f"/api/config/types")
+    response = client.get("/api/config/types")
 
     # Assert
     assert response.status_code == 200
@@ -133,7 +133,7 @@ def test_get_configured_types_with_no_content_config():
     client = TestClient(app)
 
     # Act
-    response = client.get(f"/api/config/types")
+    response = client.get("/api/config/types")
 
     # Assert
     assert response.status_code == 200

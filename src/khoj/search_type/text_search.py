@@ -77,15 +77,15 @@ def compute_embeddings(
             new_embeddings = bi_encoder.encode(
                 new_entries, convert_to_tensor=True, device=state.device, show_progress_bar=True
             )
-            existing_entry_ids = [id for id, _ in entries_with_ids if id != -1]
-            if existing_entry_ids:
+            if existing_entry_ids := [
+                id for id, _ in entries_with_ids if id != -1
+            ]:
                 existing_embeddings = torch.index_select(
                     corpus_embeddings, 0, torch.tensor(existing_entry_ids, device=state.device)
                 )
             else:
                 existing_embeddings = torch.tensor([], device=state.device)
             corpus_embeddings = torch.cat([existing_embeddings, new_embeddings], dim=0)
-    # Else compute the corpus embeddings from scratch
     else:
         new_entries = [entry.compiled for _, entry in entries_with_ids]
         logger.info(f"📩 Indexing {len(new_entries)} text entries. Creating index from scratch.")
@@ -166,7 +166,7 @@ def collate_results(hits, entries: List[Entry], count=5) -> List[SearchResponse]
                 },
             }
         )
-        for hit in hits[0:count]
+        for hit in hits[:count]
     ]
 
 
@@ -218,14 +218,12 @@ def apply_filters(
             query, included_entry_indices_by_filter = filter.apply(query, entries)
             included_entry_indices.intersection_update(included_entry_indices_by_filter)
 
-        # Get entries (and associated embeddings) satisfying all filters
         if not included_entry_indices:
             return "", [], torch.tensor([], device=state.device)
-        else:
-            entries = [entries[id] for id in included_entry_indices]
-            corpus_embeddings = torch.index_select(
-                corpus_embeddings, 0, torch.tensor(list(included_entry_indices), device=state.device)
-            )
+        entries = [entries[id] for id in included_entry_indices]
+        corpus_embeddings = torch.index_select(
+            corpus_embeddings, 0, torch.tensor(list(included_entry_indices), device=state.device)
+        )
 
     return query, entries, corpus_embeddings
 

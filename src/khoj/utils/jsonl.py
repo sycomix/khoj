@@ -13,8 +13,6 @@ logger = logging.getLogger(__name__)
 
 def load_jsonl(input_path):
     "Read List of JSON objects from JSON line file"
-    # Initialize Variables
-    data = []
     jsonl_file = None
 
     # Open JSONL file
@@ -23,10 +21,7 @@ def load_jsonl(input_path):
     elif input_path.suffix == ".jsonl":
         jsonl_file = open(get_absolute_path(input_path), "r", encoding="utf-8")
 
-    # Read JSONL file
-    for line in jsonl_file:
-        data.append(json.loads(line.strip(empty_escape_sequences)))
-
+    data = [json.loads(line.strip(empty_escape_sequences)) for line in jsonl_file]
     # Close JSONL file
     jsonl_file.close()
 

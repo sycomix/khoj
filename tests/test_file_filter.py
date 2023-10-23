@@ -100,11 +100,9 @@ def test_multiple_file_filter():
 
 
 def arrange_content():
-    entries = [
+    return [
         Entry(compiled="", raw="First Entry", file="file 1.org"),
         Entry(compiled="", raw="Second Entry", file="file2.org"),
         Entry(compiled="", raw="Third Entry", file="file 1.org"),
         Entry(compiled="", raw="Fourth Entry", file="file2.org"),
     ]
-
-    return entries

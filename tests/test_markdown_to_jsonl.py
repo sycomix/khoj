@@ -9,12 +9,12 @@ from khoj.processor.markdown.markdown_to_jsonl import MarkdownToJsonl
 def test_markdown_file_with_no_headings_to_jsonl(tmp_path):
     "Convert files with no heading to jsonl."
     # Arrange
-    entry = f"""
+    entry = """
     - Bullet point 1
     - Bullet point 2
     """
     markdownfile = create_file(tmp_path, entry)
-    expected_heading = "# " + markdownfile.stem
+    expected_heading = f"# {markdownfile.stem}"
 
     # Act
     # Extract Entries from specified Markdown files
@@ -82,7 +82,7 @@ def test_multiple_markdown_entries_to_jsonl(tmp_path):
     # Assert
     assert len(jsonl_data) == 2
     # Ensure entry compiled strings include the markdown files they originate from
-    assert all([markdownfile.stem in entry.compiled for entry in entries])
+    assert all(markdownfile.stem in entry.compiled for entry in entries)
 
 
 def test_get_markdown_files(tmp_path):
@@ -116,7 +116,7 @@ def test_get_markdown_files(tmp_path):
 def test_extract_entries_with_different_level_headings(tmp_path):
     "Extract markdown entries with different level headings."
     # Arrange
-    entry = f"""
+    entry = """
 # Heading 1
 ## Heading 2
 """

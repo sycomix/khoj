@@ -25,7 +25,7 @@ posthog = Posthog(project_api_key=os.getenv("POSTHOG_API_KEY"), host="https://ap
 @app.post("/v1/telemetry")
 def v1_telemetry(telemetry_data: List[Dict[str, str]]):
     # Throw exception if no telemetry data received in POST request body
-    if len(telemetry_data) == 0:
+    if not telemetry_data:
         error_message = "Post body is empty. It should contain some telemetry data"
         logger.error(error_message)
         raise HTTPException(status_code=500, detail=error_message)

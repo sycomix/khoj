@@ -89,7 +89,7 @@ class StreamingChatCallbackHandler(StreamingStdOutCallbackHandler):
 )
 def completion_with_backoff(**kwargs):
     messages = kwargs.pop("messages")
-    if not "openai_api_key" in kwargs:
+    if "openai_api_key" not in kwargs:
         kwargs["openai_api_key"] = os.getenv("OPENAI_API_KEY")
     llm = ChatOpenAI(**kwargs, request_timeout=20, max_retries=1)
     return llm(messages=messages)
@@ -169,10 +169,10 @@ def generate_chatml_messages_with_context(
 def truncate_messages(messages, max_prompt_size, model_name):
     """Truncate messages to fit within max prompt size supported by model"""
     encoder = tiktoken.encoding_for_model(model_name)
-    tokens = sum([len(encoder.encode(message.content)) for message in messages])
+    tokens = sum(len(encoder.encode(message.content)) for message in messages)
     while tokens > max_prompt_size and len(messages) > 1:
         messages.pop()
-        tokens = sum([len(encoder.encode(message.content)) for message in messages])
+        tokens = sum(len(encoder.encode(message.content)) for message in messages)
 
     # Truncate last message if still over max supported prompt size by model
     if tokens > max_prompt_size:

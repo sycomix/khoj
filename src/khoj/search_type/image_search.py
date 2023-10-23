@@ -132,10 +132,12 @@ def extract_metadata(image_name):
         image_xmp_metadata, "xmpmeta", "RDF", "Description", "description", "Alt", "li", "text"
     )
     image_subjects = get_from_dict(image_xmp_metadata, "xmpmeta", "RDF", "Description", "subject", "Bag", "li")
-    image_metadata_subjects = set([subject.split(":")[1] for subject in image_subjects if ":" in subject])
+    image_metadata_subjects = {
+        subject.split(":")[1] for subject in image_subjects if ":" in subject
+    }
 
     image_processed_metadata = image_description
-    if len(image_metadata_subjects) > 0:
+    if image_metadata_subjects:
         image_processed_metadata += ". " + ", ".join(image_metadata_subjects)
 
     logger.debug(f"{image_name}:\t{image_processed_metadata}")
@@ -175,9 +177,9 @@ async def query(raw_query, count, model: ImageSearchModel, score_threshold: floa
                 for result in util.semantic_search(query_embedding, model.image_metadata_embeddings, top_k=count)[0]
             }
 
+        scaling_factor = 0.33
         # Sum metadata, image scores of the highest ranked images
         for corpus_id, score in metadata_hits.items():
-            scaling_factor = 0.33
             if "corpus_id" in image_hits:
                 image_hits[corpus_id].update(
                     {

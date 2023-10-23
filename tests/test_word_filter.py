@@ -68,11 +68,9 @@ def test_word_include_and_exclude_filter():
 
 
 def arrange_content():
-    entries = [
+    return [
         Entry(compiled="", raw="Minimal Entry"),
         Entry(compiled="", raw="Entry with exclude_word"),
         Entry(compiled="", raw="Entry with include_word"),
         Entry(compiled="", raw="Entry with include_word and exclude_word"),
     ]
-
-    return entries

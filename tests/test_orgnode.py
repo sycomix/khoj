@@ -10,7 +10,7 @@ from khoj.processor.org_mode import orgnode
 def test_parse_entry_with_no_headings(tmp_path):
     "Test parsing of entry with minimal fields"
     # Arrange
-    entry = f"""Body Line 1"""
+    entry = """Body Line 1"""
     orgfile = create_file(tmp_path, entry)
 
     # Act
@@ -19,7 +19,7 @@ def test_parse_entry_with_no_headings(tmp_path):
     # Assert
     assert len(entries) == 1
     assert entries[0].heading == f"{orgfile}"
-    assert entries[0].tags == list()
+    assert entries[0].tags == []
     assert entries[0].body == "Body Line 1"
     assert entries[0].priority == ""
     assert entries[0].Property("ID") == ""
@@ -32,7 +32,7 @@ def test_parse_entry_with_no_headings(tmp_path):
 def test_parse_minimal_entry(tmp_path):
     "Test parsing of entry with minimal fields"
     # Arrange
-    entry = f"""
+    entry = """
 * Heading
 Body Line 1"""
     orgfile = create_file(tmp_path, entry)
@@ -43,7 +43,7 @@ Body Line 1"""
     # Assert
     assert len(entries) == 1
     assert entries[0].heading == "Heading"
-    assert entries[0].tags == list()
+    assert entries[0].tags == []
     assert entries[0].body == "Body Line 1"
     assert entries[0].priority == ""
     assert entries[0].Property("ID") == ""
@@ -56,7 +56,7 @@ Body Line 1"""
 def test_parse_complete_entry(tmp_path):
     "Test parsing of entry with all important fields"
     # Arrange
-    entry = f"""
+    entry = """
 *** DONE [#A] Heading   :Tag1:TAG2:tag3:
 CLOSED: [1984-04-01 Sun 12:00] SCHEDULED: <1984-04-01 Sun 09:00> DEADLINE: <1984-04-01 Sun>
 :PROPERTIES:
@@ -119,7 +119,7 @@ def test_render_entry_with_property_drawer_and_empty_body(tmp_path):
 def test_all_links_to_entry_rendered(tmp_path):
     "Ensure all links to entry rendered in property drawer from entry"
     # Arrange
-    entry = f"""
+    entry = """
 *** [#A] Heading   :tag1:
 :PROPERTIES:
 :ID: 123-456-789-4234-1231
@@ -146,7 +146,7 @@ Body Line 2
 def test_source_link_to_entry_escaped_for_rendering(tmp_path):
     "Test SOURCE link renders with square brackets in filename, heading escaped for org-mode rendering"
     # Arrange
-    entry = f"""
+    entry = """
 *** [#A] Heading[1]   :tag1:
 :PROPERTIES:
 :ID: 123-456-789-4234-1231
@@ -170,7 +170,7 @@ Body Line 1"""
 def test_parse_multiple_entries(tmp_path):
     "Test parsing of multiple entries"
     # Arrange
-    content = f"""
+    content = """
 *** FAILED [#A] Heading1   :tag1:
 CLOSED: [1984-04-01 Sun 12:00] SCHEDULED: <1984-04-01 Sun 09:00> DEADLINE: <1984-04-01 Sun>
 :PROPERTIES:
@@ -220,7 +220,7 @@ Body 2
 def test_parse_entry_with_empty_title(tmp_path):
     "Test parsing of entry with minimal fields"
     # Arrange
-    entry = f"""#+TITLE:
+    entry = """#+TITLE:
 Body Line 1"""
     orgfile = create_file(tmp_path, entry)
 
@@ -230,7 +230,7 @@ Body Line 1"""
     # Assert
     assert len(entries) == 1
     assert entries[0].heading == f"{orgfile}"
-    assert entries[0].tags == list()
+    assert entries[0].tags == []
     assert entries[0].body == "Body Line 1"
     assert entries[0].priority == ""
     assert entries[0].Property("ID") == ""
@@ -243,7 +243,7 @@ Body Line 1"""
 def test_parse_entry_with_title_and_no_headings(tmp_path):
     "Test parsing of entry with minimal fields"
     # Arrange
-    entry = f"""#+TITLE: test
+    entry = """#+TITLE: test
 Body Line 1"""
     orgfile = create_file(tmp_path, entry)
 
@@ -253,7 +253,7 @@ Body Line 1"""
     # Assert
     assert len(entries) == 1
     assert entries[0].heading == "test"
-    assert entries[0].tags == list()
+    assert entries[0].tags == []
     assert entries[0].body == "Body Line 1"
     assert entries[0].priority == ""
     assert entries[0].Property("ID") == ""
@@ -266,7 +266,7 @@ Body Line 1"""
 def test_parse_entry_with_multiple_titles_and_no_headings(tmp_path):
     "Test parsing of entry with minimal fields"
     # Arrange
-    entry = f"""#+TITLE: title1
+    entry = """#+TITLE: title1
 Body Line 1
 #+TITLE:  title2 """
     orgfile = create_file(tmp_path, entry)
@@ -277,7 +277,7 @@ Body Line 1
     # Assert
     assert len(entries) == 1
     assert entries[0].heading == "title1 title2"
-    assert entries[0].tags == list()
+    assert entries[0].tags == []
     assert entries[0].body == "Body Line 1\n"
     assert entries[0].priority == ""
     assert entries[0].Property("ID") == ""
@@ -290,7 +290,7 @@ Body Line 1
 def test_parse_org_with_intro_text_before_heading(tmp_path):
     "Test parsing of org file with intro text before heading"
     # Arrange
-    body = f"""#+TITLE: Title
+    body = """#+TITLE: Title
 intro body
 * Entry Heading
 entry body
@@ -312,7 +312,7 @@ entry body
 def test_parse_org_with_intro_text_multiple_titles_and_heading(tmp_path):
     "Test parsing of org file with intro text, multiple titles and heading entry"
     # Arrange
-    body = f"""#+TITLE: Title1
+    body = """#+TITLE: Title1
 intro body
 * Entry Heading
 entry body

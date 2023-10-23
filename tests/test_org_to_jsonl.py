@@ -64,7 +64,9 @@ def test_entry_split_when_exceeds_max_words(tmp_path):
     # Assert
     assert len(jsonl_data) == 2
     # Ensure compiled entries split by max_words start with entry heading (for search context)
-    assert all([entry["compiled"].startswith(expected_heading) for entry in jsonl_data])
+    assert all(
+        entry["compiled"].startswith(expected_heading) for entry in jsonl_data
+    )
 
 
 def test_entry_split_drops_large_words():
@@ -114,7 +116,7 @@ def test_entry_with_body_to_jsonl(tmp_path):
 def test_file_with_entry_after_intro_text_to_jsonl(tmp_path):
     "Ensure intro text before any headings is indexed."
     # Arrange
-    entry = f"""
+    entry = """
 Intro text
 
 * Entry Heading
@@ -138,7 +140,7 @@ Intro text
 def test_file_with_no_headings_to_jsonl(tmp_path):
     "Ensure files with no heading, only body text are loaded."
     # Arrange
-    entry = f"""
+    entry = """
     - Bullet point 1
     - Bullet point 2
     """
@@ -188,7 +190,7 @@ def test_get_org_files(tmp_path):
 def test_extract_entries_with_different_level_headings(tmp_path):
     "Extract org entries with different level headings."
     # Arrange
-    entry = f"""
+    entry = """
 * Heading 1
 ** Heading 2
 """

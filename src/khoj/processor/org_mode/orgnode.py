@@ -49,8 +49,7 @@ def normalize_filename(filename):
         normalized_filename = f"~/{relpath(filename, start=Path.home())}"
     else:
         normalized_filename = filename
-    escaped_filename = f"{normalized_filename}".replace("[", "\[").replace("]", "\]")
-    return escaped_filename
+    return f"{normalized_filename}".replace("[", "\[").replace("]", "\]")
 
 
 def makelist_with_filepath(filename):
